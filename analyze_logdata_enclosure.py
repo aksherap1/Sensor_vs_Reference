@@ -561,25 +561,30 @@ def graph_data_white(unit_time, col_time):
 def graph_data_longterm(unit_time, col_time):
 
     # make dataframes
-    # !!!! in progress !!!!
-    data = process_data_sensor_longterm(unit_time, col_time)
-    process_data_station(file_csv, unit_time, col_time)
+    data_sensor = process_data_sensor_longterm(unit_time, col_time)
+    data_station = process_data_station("sensordata_8.17-9_11.csv", unit_time, col_time)
+
+
+    # filter station data so it only has valid values
+    data_station_filtered = data_station.iloc[4300:6700]
+    # old range: 4174-6571
+    # updated range: 4300-6700
 
     # graph temperature and humidity as hued graphs
-    dfs = [data_station, data_sensor]
+    dfs = [data_station_filtered, data_sensor]
     columns = [[col_time, "Sensor", "Temp (C)", "RH (%)"],
-              [col_time, "Sensor", "temp", "humidity"]]
+              [col_time, "Sensor", "temperature", "humidity"]]
     titles_axes = [col_time, "Sensor", "Temp (C)", "RH (%)"]
     titles_graph = ["Time vs Temperature", "Time vs Humidity"]
-    description = "(7/28-7/30 White Case vs Station Data)"
+    description = "(8/19-9/11 Longterm Collection vs Station Data)"
     graph.graph_hued_data(dfs, columns, titles_axes, titles_graph, description, "Data_Ok")
 
-    y_cols = ["solar_mv", "solar_ma", "batt_mv", "batt_ma", "radio_mv", "radio_ma"]
+    """y_cols = ["solar_mv", "solar_ma", "batt_mv", "batt_ma", "radio_mv", "radio_ma"]
     y_labels = ["solar_mv", "solar_ma", "batt_mv", "batt_ma", "radio_mv", "radio_ma"]
     titles_ind = ["", "", "", "", "", ""]
     description = "Long-Term Enclosure"
     graph.graph_subplots_line(data, 3, 2, col_time, y_cols, col_time, y_labels,
-                              titles_ind, "Battery Info", description, "Data_Ok")
+                              titles_ind, "Battery Info", description, "Data_Ok")"""
 
     graph.show_graphs()
 
@@ -600,7 +605,7 @@ def main():
     #print(df_3) # 7/10-7/13, green case, logdata7-10-26to7-13-26.CSV
     #print(df_4) # 7/28-7/30, white case, 73026whiteneclosuretest.csv
 
-    graph_data_green("days", "Time (Days)")
+    graph_data_longterm("days", "Time (Days)")
     #graph_data_longterm("days", "Time (Days)")
 
 if __name__ == '__main__':
